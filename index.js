@@ -1,27 +1,13 @@
 var http = require('http');
-var fs = require('fs');
-var extract = require('./extract');
-var mime = require('mime');
 
-var handleError = function(err, res) {
-  var filePath = extract('/error.html');
-  fs.readFile(filePath, function(err, data) {
-    res.end(data);
-  });
-};
+//Gold Challenge: Moving Error Handling to Its OwnModule
+var readFile = require('./readfile')('app');
 
 var server = http.createServer(function(req, res) {
   console.log('Responding to a request.');
-  var filePath = extract(req.url);
-  fs.readFile(filePath, function(err, data) {
-    if (err) {
-      handleError(err, res);
-      return;
-    } else {
-      //Silver Challenge: Providing a MIME Type Dynamically
-      res.setHeader('Content-Type', mime.getType(filePath));
-      res.end(data);
-    }
-  });
+
+  //Gold Challenge: Moving Error Handling to Its OwnModule
+  readFile(req, res);
+
 });
 server.listen(3000);
