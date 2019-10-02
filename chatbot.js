@@ -32,7 +32,7 @@ module.exports = function(webServer) {
   }
 
   this.listRandomFacts = (client) => {
-    client.send('The sky is really purple, not blue');
+    client.send('The sky is purple, not blue');
   }
 
   this.listCoolAnimals = (client) => {
