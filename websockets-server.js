@@ -1,7 +1,5 @@
 var WebSocket = require('ws');
 
-
-
 var WebSocketServer = WebSocket.Server;
 var port = 3001;
 var ws = new WebSocketServer({
@@ -10,8 +8,6 @@ var ws = new WebSocketServer({
 var messages = [];
 //Silver Challenge: Speakeasy
 var authUsers = new Set();
-var cmds = ['/help', '-users', '-randomfacts', '-coolanimals'];
-
 var chatbot = require('./chatbot')(ws);
 chatbot.connectToServer();
 authUsers.add(chatbot.connection);
@@ -37,7 +33,7 @@ ws.on('connection', function(socket) {
 
     if (authUsers.has(socket)) {
 
-      if (!cmds.includes(data)) {
+      if (!chatbot.cmds.includes(data)) {
         messages.push(data);
 
         ws.clients.forEach(function(clientSocket) {
@@ -53,19 +49,8 @@ ws.on('connection', function(socket) {
           }
 
         });
-      }
-
-      if (data === '/help') {
-        chatbot.listCommands(socket);
-      }
-      if (data === '-users') {
-        chatbot.listUsers(socket);
-      }
-      if (data === '-randomfacts') {
-        chatbot.listRandomFacts(socket);
-      }
-      if (data === '-coolanimals') {
-        chatbot.listCoolAnimals(socket);
+      } else {
+        chatbot.resolveCmd(socket, data);
       }
 
     }

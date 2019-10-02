@@ -2,7 +2,8 @@ var WebSocket = require('ws');
 
 module.exports = function(webServer) {
 
-  const connection = new WebSocket('http://localhost:' + webServer.options.port);
+  var connection = new WebSocket('http://localhost:' + webServer.options.port);
+  this.cmds = ['/help', '-users', '-randomfacts', '-coolanimals'];
 
   this.connectToServer = () => {
 
@@ -26,16 +27,37 @@ module.exports = function(webServer) {
     client.send('-coolanimals [display a list of cool animals]');
   }
 
-  this.listUsers = (client) => {
+  this.resolveCmd = (client, data) => {
+
+    switch (data) {
+      case '/help':
+        listCommands(client);
+        break;
+      case '-users':
+        listUsers(client);
+        break;
+      case '-randomfacts':
+        listRandomFacts(client);
+        break;
+      case '-coolanimals':
+        listCoolAnimals(client);
+        break;
+      default:
+        // default code block
+    }
+
+  }
+
+  listUsers = (client) => {
     //Currently not working :(
     client.send(JSON.stringify(webServer.clients));
   }
 
-  this.listRandomFacts = (client) => {
+  listRandomFacts = (client) => {
     client.send('The sky is purple, not blue');
   }
 
-  this.listCoolAnimals = (client) => {
+  listCoolAnimals = (client) => {
     client.send('Zebra, Panter & Swordfish');
   }
 
