@@ -14,6 +14,16 @@ function registerOpenHandler(handlerFunction) {
   };
 }
 
+//Silver Challenge: Closed Connection Alert
+function registerCloseHandler(handlerFunction) {
+  console.log('registerCloseHandler');
+
+  socket.onclose = () => {
+    console.log('disconnected');
+    handlerFunction();
+  };
+}
+
 function registerMessageHandler(handlerFunction) {
   console.log('registerMessageHandler');
 
@@ -34,6 +44,7 @@ function sendMessage(payload) {
 export default {
   init,
   registerOpenHandler,
+  registerCloseHandler,
   registerMessageHandler,
   sendMessage,
 }
