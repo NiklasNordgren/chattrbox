@@ -1,4 +1,5 @@
 var http = require('http');
+var wss = require('./websockets-server');
 
 //Gold Challenge: Moving Error Handling to Its OwnModule
 var readFile = require('./readfile')('app');
