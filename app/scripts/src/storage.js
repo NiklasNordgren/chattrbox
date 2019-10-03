@@ -35,3 +35,10 @@ export class MessageStore extends Store {
   }
 
 }
+
+export class ServerStore extends Store {
+  constructor(key) {
+    super(sessionStorage);
+    this.key = key;
+  }
+}

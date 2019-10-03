@@ -1,12 +1,15 @@
 import socket from './ws-client';
 import {
   UserStore,
-  MessageStore
+  MessageStore,
+  ServerStore
 } from './storage';
 import {
   ChatForm,
   ChatList,
-  promptForUsername
+  promptForUsername,
+  promptForServername,
+  setHeaderToServername
 } from './dom';
 
 const FORM_SELECTOR = '[data-chat="chat-form"]';
@@ -22,10 +25,18 @@ if (!username) {
 
 let messageStore = new MessageStore('x-chattrbox/m');
 
+let serverStore = new ServerStore('x-chattrbox/s');
+let servername = serverStore.get();
+if (!servername) {
+  servername = promptForServername();
+  serverStore.set(servername);
+}
+setHeaderToServername(servername);
+
 class ChatApp {
   constructor() {
     this.chatForm = new ChatForm(FORM_SELECTOR, INPUT_SELECTOR);
-    this.chatList = new ChatList(LIST_SELECTOR, username);
+    this.chatList = new ChatList(LIST_SELECTOR, username, servername);
 
     if (messageStore.get()) {
       messageStore.get().forEach(msg => {
@@ -37,7 +48,8 @@ class ChatApp {
     socket.registerOpenHandler(() => {
       this.chatForm.init((data) => {
         let message = new ChatMessage({
-          message: data
+          message: data,
+          server: servername
         });
         socket.sendMessage(message.serialize());
       });
@@ -60,18 +72,21 @@ class ChatMessage {
   constructor({
     message: m,
     user: u = username,
-    timestamp: t = (new Date()).getTime()
+    timestamp: t = (new Date()).getTime(),
+    server: s
   }) {
     this.message = m;
     this.user = u;
     this.timestamp = t;
+    this.server = s;
   }
 
   serialize() {
     return {
       user: this.user,
       message: this.message,
-      timestamp: this.timestamp
+      timestamp: this.timestamp,
+      server: this.server
     };
   }
 
