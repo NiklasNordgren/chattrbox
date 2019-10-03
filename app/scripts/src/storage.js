@@ -19,8 +19,18 @@ export class UserStore extends Store {
 
 export class MessageStore extends Store {
   constructor(key) {
-    super(sessionStorage);
+    super(localStorage);
     this.key = key;
+  }
+
+  set(message) {
+      let messages = JSON.parse(super.get()) || [];
+      messages.push(message);
+      super.set(JSON.stringify(messages));
+  }
+
+  get() {
+    return JSON.parse(super.get());
   }
 
 }

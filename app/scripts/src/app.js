@@ -20,14 +20,7 @@ if (!username) {
   userStore.set(username);
 }
 
-debugger;
-
 let messageStore = new MessageStore('x-chattrbox/m');
-let messages = messageStore.get();
-if (!messages) {
-  messages = '{}';
-  messageStore.set(messages);
-}
 
 class ChatApp {
   constructor() {
@@ -37,16 +30,10 @@ class ChatApp {
     socket.init('ws://localhost:3001');
     socket.registerOpenHandler(() => {
 
-      if (messageStore.get() !== {}) {
-
-        for(var property in messages){
-          if(property.key === 'message'){
-            let message = new ChatMessage({
-              message: property[key]
-            });
-            socket.sendMessage(message.serialize());
-          }
-        }
+      if (messageStore.get()) {
+        messageStore.get().forEach(msg => {
+          this.chatList.drawMessage(msg);
+        });
       }
 
       this.chatForm.init((data) => {
@@ -60,12 +47,8 @@ class ChatApp {
     });
     socket.registerMessageHandler((data) => {
       console.log(data);
-
-      JSON.parse(messages);
-      messages.push(data);
-      JSON.stringify(messages);
-
       let message = new ChatMessage(data);
+      messageStore.set(message.serialize());
       this.chatList.drawMessage(message.serialize());
     });
     socket.registerCloseHandler((data) => {
