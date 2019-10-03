@@ -16,3 +16,11 @@ export class UserStore extends Store {
     this.key = key;
   }
 }
+
+export class MessageStore extends Store {
+  constructor(key) {
+    super(sessionStorage);
+    this.key = key;
+  }
+
+}

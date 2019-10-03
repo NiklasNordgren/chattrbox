@@ -70,6 +70,9 @@ export class ChatList {
     $messageRow.append($img);
     $messageRow.append($message);
     $(this.$list).append($messageRow);
+    //Bronze Challenge: Adding Visual Effects to Messages
+    $messageRow.hide();
+    $messageRow.fadeIn(1500);
     $messageRow.get(0).scrollIntoView();
   }
 

@@ -37,6 +37,7 @@
     "watchify": "^3.11.1"
   },
   "dependencies": {
+    "jquery-ui-dist": "^1.12.1",
     "mime": "^2.4.4",
     "ws": "^7.1.2"
   }

@@ -1,6 +1,7 @@
 import socket from './ws-client';
 import {
-  UserStore
+  UserStore,
+  MessageStore
 } from './storage';
 import {
   ChatForm,
@@ -19,6 +20,15 @@ if (!username) {
   userStore.set(username);
 }
 
+debugger;
+
+let messageStore = new MessageStore('x-chattrbox/m');
+let messages = messageStore.get();
+if (!messages) {
+  messages = '{}';
+  messageStore.set(messages);
+}
+
 class ChatApp {
   constructor() {
     this.chatForm = new ChatForm(FORM_SELECTOR, INPUT_SELECTOR);
@@ -26,7 +36,21 @@ class ChatApp {
 
     socket.init('ws://localhost:3001');
     socket.registerOpenHandler(() => {
+
+      if (messageStore.get() !== {}) {
+
+        for(var property in messages){
+          if(property.key === 'message'){
+            let message = new ChatMessage({
+              message: property[key]
+            });
+            socket.sendMessage(message.serialize());
+          }
+        }
+      }
+
       this.chatForm.init((data) => {
+
         let message = new ChatMessage({
           message: data
         });
@@ -36,6 +60,11 @@ class ChatApp {
     });
     socket.registerMessageHandler((data) => {
       console.log(data);
+
+      JSON.parse(messages);
+      messages.push(data);
+      JSON.stringify(messages);
+
       let message = new ChatMessage(data);
       this.chatList.drawMessage(message.serialize());
     });
