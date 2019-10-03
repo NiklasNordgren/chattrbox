@@ -8,6 +8,7 @@ var ws = new WebSocketServer({
 var messages = [];
 //Silver Challenge: Speakeasy
 var authUsers = new Set();
+var unauthUsers = new Set();
 var chatbot = require('./chatbot')(ws);
 chatbot.connectToServer();
 authUsers.add(chatbot.connection);
@@ -22,6 +23,7 @@ ws.on('connection', function(socket) {
 
     if (data === 'Swordfish' && !authUsers.has(socket)) {
       authUsers.add(socket);
+      unauthUsers.delete(socket);
 
       messages.forEach(function(msg) {
         socket.send(msg);
@@ -52,6 +54,14 @@ ws.on('connection', function(socket) {
       } else {
         chatbot.resolveCmd(socket, data);
       }
+
+    } else {
+
+      if (!unauthUsers.has(socket)) {
+        unauthUsers.add(socket);
+      }
+      unauthUsers.forEach(user => user.send(data));
+      console.log(data);
 
     }
 
