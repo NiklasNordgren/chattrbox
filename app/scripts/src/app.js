@@ -27,17 +27,15 @@ class ChatApp {
     this.chatForm = new ChatForm(FORM_SELECTOR, INPUT_SELECTOR);
     this.chatList = new ChatList(LIST_SELECTOR, username);
 
+    if (messageStore.get()) {
+      messageStore.get().forEach(msg => {
+        this.chatList.drawMessage(msg);
+      });
+    }
+
     socket.init('ws://localhost:3001');
     socket.registerOpenHandler(() => {
-
-      if (messageStore.get()) {
-        messageStore.get().forEach(msg => {
-          this.chatList.drawMessage(msg);
-        });
-      }
-
       this.chatForm.init((data) => {
-
         let message = new ChatMessage({
           message: data
         });

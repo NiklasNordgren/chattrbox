@@ -17,6 +17,7 @@ export class UserStore extends Store {
   }
 }
 
+//Silver Challenge: Caching Messages
 export class MessageStore extends Store {
   constructor(key) {
     super(localStorage);
@@ -24,9 +25,9 @@ export class MessageStore extends Store {
   }
 
   set(message) {
-      let messages = JSON.parse(super.get()) || [];
-      messages.push(message);
-      super.set(JSON.stringify(messages));
+    let messages = JSON.parse(super.get()) || [];
+    messages.push(message);
+    super.set(JSON.stringify(messages));
   }
 
   get() {
